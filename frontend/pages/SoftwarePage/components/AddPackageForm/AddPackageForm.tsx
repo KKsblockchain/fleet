@@ -1,3 +1,4 @@
+// Used in AddPackageModal.tsx and EditSoftwareModal.tsx
 import React, { useContext, useState } from "react";
 
 import { NotificationContext } from "context/notification";
@@ -6,10 +7,7 @@ import getInstallScript from "utilities/software_install_scripts";
 
 import Button from "components/buttons/Button";
 import Checkbox from "components/forms/fields/Checkbox";
-import {
-  FileUploader,
-  FileDetails,
-} from "components/FileUploader/FileUploader";
+import { FileUploader } from "components/FileUploader/FileUploader";
 import Spinner from "components/Spinner";
 import TooltipWrapper from "components/TooltipWrapper";
 
@@ -33,6 +31,7 @@ export interface IAddPackageFormData {
   installScript: string;
   preInstallQuery?: string;
   postInstallScript?: string;
+  uninstallScript?: string;
   selfService: boolean;
 }
 
@@ -41,6 +40,7 @@ export interface IFormValidation {
   software: { isValid: boolean };
   preInstallQuery?: { isValid: boolean; message?: string };
   postInstallScript?: { isValid: boolean; message?: string };
+  uninstallScript?: { isValid: boolean; message?: string };
   selfService?: { isValid: boolean };
 }
 
@@ -48,21 +48,38 @@ interface IAddPackageFormProps {
   isUploading: boolean;
   onCancel: () => void;
   onSubmit: (formData: IAddPackageFormData) => void;
+  isEditingSoftware?: boolean;
+  defaultSoftware?: any; // TODO
+  defaultInstallScript?: string;
+  defaultPreInstallQuery?: string;
+  defaultPostInstallScript?: string;
+  defaultUninstallScript?: string;
+  defaultSelfService?: boolean;
 }
+
+const ACCEPTED_EXTENSIONS = ".pkg,.msi,.exe,.deb";
 
 const AddPackageForm = ({
   isUploading,
   onCancel,
   onSubmit,
+  isEditingSoftware = false,
+  defaultSoftware,
+  defaultInstallScript,
+  defaultPreInstallQuery,
+  defaultPostInstallScript,
+  defaultUninstallScript,
+  defaultSelfService,
 }: IAddPackageFormProps) => {
   const { renderFlash } = useContext(NotificationContext);
 
   const [formData, setFormData] = useState<IAddPackageFormData>({
-    software: null,
-    installScript: "",
-    preInstallQuery: undefined,
-    postInstallScript: undefined,
-    selfService: false,
+    software: defaultSoftware || null,
+    installScript: defaultInstallScript || "",
+    preInstallQuery: defaultPreInstallQuery || undefined,
+    postInstallScript: defaultPostInstallScript || undefined,
+    uninstallScript: defaultUninstallScript || undefined,
+    selfService: defaultSelfService || false,
   });
   const [formValidation, setFormValidation] = useState<IFormValidation>({
     isValid: false,
@@ -127,17 +144,16 @@ const AddPackageForm = ({
       ) : (
         <form className={`${baseClass}__form`} onSubmit={onFormSubmit}>
           <FileUploader
+            canEdit={isEditingSoftware}
             graphicName={"file-pkg"}
-            accept=".pkg,.msi,.exe,.deb"
+            accept={ACCEPTED_EXTENSIONS}
             message=".pkg, .msi, .exe, or .deb"
             onFileUpload={onFileUpload}
             buttonMessage="Choose file"
             buttonType="link"
             className={`${baseClass}__file-uploader`}
-            filePreview={
-              formData.software && (
-                <FileDetails details={getFileDetails(formData.software)} />
-              )
+            fileDetails={
+              formData.software ? getFileDetails(formData.software) : undefined
             }
           />
           <Checkbox
@@ -169,7 +185,7 @@ const AddPackageForm = ({
           />
           <div className="modal-cta-wrap">
             <Button type="submit" variant="brand" disabled={isSubmitDisabled}>
-              Add software
+              {isEditingSoftware ? "Save" : "Add software"}
             </Button>
             <Button onClick={onCancel} variant="inverse">
               Cancel
