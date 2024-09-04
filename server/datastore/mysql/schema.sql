@@ -553,11 +553,15 @@ CREATE TABLE `host_software_installs` (
   `post_install_script_output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `post_install_script_exit_code` int DEFAULT NULL,
   `user_id` int unsigned DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   `self_service` tinyint(1) NOT NULL DEFAULT '0',
-  `host_deleted_at` timestamp NULL DEFAULT NULL,
+  `host_deleted_at` timestamp(6) NULL DEFAULT NULL,
   `removed` tinyint NOT NULL DEFAULT '0',
+  `uninstall_script_output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `uninstall_script_exit_code` int DEFAULT NULL,
+  `uninstall` tinyint unsigned NOT NULL DEFAULT '0',
+  `status` varchar(31) COLLATE utf8mb4_unicode_ci GENERATED ALWAYS AS ((case when (`removed` = 1) then NULL when ((`post_install_script_exit_code` is not null) and (`post_install_script_exit_code` = 0)) then _utf8mb4'installed' when ((`post_install_script_exit_code` is not null) and (`post_install_script_exit_code` <> 0)) then _utf8mb4'failed_install' when ((`install_script_exit_code` is not null) and (`install_script_exit_code` = 0)) then _utf8mb4'installed' when ((`install_script_exit_code` is not null) and (`install_script_exit_code` <> 0)) then _utf8mb4'failed_install' when ((`pre_install_query_output` is not null) and (`pre_install_query_output` = _utf8mb4'')) then _utf8mb4'failed_install' when ((`host_id` is not null) and (`uninstall` = 0)) then _utf8mb4'pending_install' when ((`uninstall_script_exit_code` is not null) and (`uninstall_script_exit_code` <> 0)) then _utf8mb4'failed_uninstall' when ((`host_id` is not null) and (`uninstall` = 1)) then _utf8mb4'pending_uninstall' else NULL end)) STORED,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_host_software_installs_execution_id` (`execution_id`),
   KEY `fk_host_software_installs_installer_id` (`software_installer_id`),
@@ -1561,7 +1565,7 @@ CREATE TABLE `script_contents` (
   UNIQUE KEY `idx_script_contents_md5_checksum` (`md5_checksum`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-INSERT INTO `script_contents` VALUES (1,_binary 'A\‡o∫¢úâ™Ö¨∑jçb\Ô','exit 1','2024-09-04 17:02:15'),(2,_binary '\ÔO¬≥\À8\«p`$R)Ä\rT\Ì','Exit 1','2024-09-04 17:02:15');
+INSERT INTO `script_contents` VALUES (1,_binary 'A\‡o∫¢úâ™Ö¨∑jçb\Ô','exit 1','2024-09-04 21:45:32'),(2,_binary '\ÔO¬≥\À8\«p`$R)Ä\rT\Ì','Exit 1','2024-09-04 21:45:32');
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scripts` (
@@ -1673,7 +1677,7 @@ CREATE TABLE `software_installers` (
   `install_script_content_id` int unsigned NOT NULL,
   `post_install_script_content_id` int unsigned DEFAULT NULL,
   `storage_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `uploaded_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `uploaded_at` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `self_service` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int unsigned DEFAULT NULL,
   `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',

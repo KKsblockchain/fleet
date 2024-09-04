@@ -10481,7 +10481,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 			errApp.Name,
 			errApp.AdamID,
 			failedCmdUUID,
-			fleet.SoftwareInstallerFailed,
+			fleet.SoftwareInstallFailed,
 		),
 		0,
 	)
@@ -10528,7 +10528,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 			addedApp.Name,
 			addedApp.AdamID,
 			cmdUUID,
-			fleet.SoftwareInstallerInstalled,
+			fleet.SoftwareInstalled,
 		),
 		0,
 	)
@@ -10547,12 +10547,12 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 	require.Empty(t, got1.AppStoreApp.Name) // Name is only present for installer packages
 	require.Equal(t, got1.AppStoreApp.Version, addedApp.LatestVersion)
 	require.NotNil(t, got1.Status)
-	require.Equal(t, *got1.Status, fleet.SoftwareInstallerInstalled)
+	require.Equal(t, *got1.Status, fleet.SoftwareInstalled)
 	require.Equal(t, got1.AppStoreApp.LastInstall.CommandUUID, cmdUUID)
 	require.NotNil(t, got1.AppStoreApp.LastInstall.InstalledAt)
 	require.Equal(t, got2.Name, "App 2")
 	require.NotNil(t, got2.Status)
-	require.Equal(t, *got2.Status, fleet.SoftwareInstallerFailed)
+	require.Equal(t, *got2.Status, fleet.SoftwareInstallFailed)
 	require.NotNil(t, got2.AppStoreApp)
 	require.Equal(t, got2.AppStoreApp.AppStoreID, errApp.AdamID)
 	require.Equal(t, got2.AppStoreApp.IconURL, ptr.String(errApp.IconURL))
@@ -10574,7 +10574,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 	require.Empty(t, got1.AppStoreApp.Name)
 	require.Equal(t, got1.AppStoreApp.Version, addedApp.LatestVersion)
 	require.NotNil(t, got1.Status)
-	require.Equal(t, *got1.Status, fleet.SoftwareInstallerInstalled)
+	require.Equal(t, *got1.Status, fleet.SoftwareInstalled)
 	require.Equal(t, got1.AppStoreApp.LastInstall.CommandUUID, cmdUUID)
 	require.NotNil(t, got1.AppStoreApp.LastInstall.InstalledAt)
 
@@ -10705,7 +10705,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 					app.Name,
 					app.AdamID,
 					cmdUUID,
-					fleet.SoftwareInstallerPending,
+					fleet.SoftwareInstallPending,
 					install.deviceToken != "",
 				),
 				string(*hostActivitiesResp.Activities[0].Details),
@@ -10733,7 +10733,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 					app.Name,
 					app.AdamID,
 					cmdUUID,
-					fleet.SoftwareInstallerInstalled,
+					fleet.SoftwareInstalled,
 					install.deviceToken != "",
 				),
 				0,
@@ -10753,7 +10753,7 @@ func (s *integrationMDMTestSuite) TestVPPApps() {
 					require.Equal(t, got1.AppStoreApp.IconURL, ptr.String(app.IconURL))
 					require.Empty(t, got1.AppStoreApp.Name) // Name is only present for installer packages
 					require.Equal(t, got1.AppStoreApp.Version, app.LatestVersion)
-					require.Equal(t, *got1.Status, fleet.SoftwareInstallerInstalled)
+					require.Equal(t, *got1.Status, fleet.SoftwareInstalled)
 					require.Equal(t, got1.AppStoreApp.LastInstall.CommandUUID, cmdUUID)
 					require.NotNil(t, got1.AppStoreApp.LastInstall.InstalledAt)
 					foundInstalledApp = true
