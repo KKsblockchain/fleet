@@ -1563,9 +1563,8 @@ CREATE TABLE `script_contents` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_script_contents_md5_checksum` (`md5_checksum`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-INSERT INTO `script_contents` VALUES (1,_binary 'A\‡o∫¢úâ™Ö¨∑jçb\Ô','exit 1','2024-09-04 21:45:32'),(2,_binary '\ÔO¬≥\À8\«p`$R)Ä\rT\Ì','Exit 1','2024-09-04 21:45:32');
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scripts` (
